@@ -267,7 +267,7 @@
 
     <div class="divider"></div>
 
-    <p class="section-label">Job boards <span style="font-weight:400;text-transform:none;letter-spacing:0;">(select to search)</span></p>
+    <p class="section-label">Job boards <span style="font-weight:400;text-transform:none;letter-spacing:0;">(select one to search)</span></p>
     <div class="site-grid" id="sites">
       <div class="site-card active" data-url="linkedin" data-label="LinkedIn"><i class="ti ti-brand-linkedin"></i><span>LinkedIn</span></div>
       <div class="site-card" data-url="naukri" data-label="Naukri"><i class="ti ti-building-skyscraper"></i><span>Naukri</span></div>
@@ -282,6 +282,15 @@
       <div class="site-card" data-url="weworkremotely" data-label="We Work Remotely"><i class="ti ti-device-laptop"></i><span>We Work Remotely</span></div>
       <div class="site-card" data-url="dice" data-label="Dice"><i class="ti ti-code"></i><span>Dice</span></div>
     </div>
+    <script>
+    document.querySelectorAll('.site-card').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.site-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        updateNote();
+      });
+    });
+    </script>
 
     <div class="footer">
       <button class="search-btn" id="searchBtn">
