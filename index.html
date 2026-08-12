@@ -1,179 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Search Filters — Abhay Mishra</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-<style>
-  .container { padding: 1rem 0; font-family: var(--font-sans); }
-  .section-label { font-size: 12px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 8px; font-weight: 500; }
-  .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-  .tag { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; padding: 4px 10px; border-radius: 20px; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-secondary); color: var(--color-text-primary); cursor: pointer; user-select: none; transition: background 0.15s; }
-  .tag.active { background: #EEEDFE; border-color: #AFA9EC; color: #3C3489; }
-  .tag i { font-size: 13px; }
-  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-  .field { display: flex; flex-direction: column; gap: 6px; }
-  .field label { font-size: 13px; color: var(--color-text-secondary); }
-  select, input[type=text] { font-size: 14px; padding: 7px 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-primary); width: 100%; }
-  .divider { height: 0.5px; background: var(--color-border-tertiary); margin: 16px 0; }
-  .site-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-bottom: 16px; }
-  .site-card { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 10px 8px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-secondary); cursor: pointer; transition: background 0.15s; }
-  .site-card.active { background: #EEEDFE; border-color: #AFA9EC; }
-  .site-card span { font-size: 12px; color: var(--color-text-primary); text-align: center; }
-  .site-card i { font-size: 20px; color: var(--color-text-secondary); }
-  .site-card.active i, .site-card.active span { color: #3C3489; }
-  .search-btn { width: 100%; padding: 10px; font-size: 14px; font-weight: 500; border-radius: var(--border-radius-md); background: #3C3489; color: #fff; border: none; cursor: pointer; margin-top: 8px; letter-spacing: 0.01em; }
-  .search-btn:hover { background: #534AB7; }
-  .note { font-size: 12px; color: var(--color-text-tertiary); margin-top: 8px; }
-  h2.title { font-size: 16px; font-weight: 500; margin: 0 0 16px; color: var(--color-text-primary); }
-</style>
-<div class="container">
-  <h2 class="sr-only">Job search filter builder based on resume</h2>
-  <h2 class="title"><i class="ti ti-search" aria-hidden="true" style="margin-right:6px;font-size:16px;vertical-align:-2px;"></i>Job search filters — Abhay Mishra</h2>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #F0F2F5;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 16px 48px;
+    }
 
-  <p class="section-label">Role titles (tap to toggle)</p>
-  <div class="tag-row" id="roles">
-    <span class="tag active" data-val="Senior Full Stack Engineer"><i class="ti ti-check" aria-hidden="true"></i>Senior Full Stack Engineer</span>
-    <span class="tag active" data-val="Full Stack Developer"><i class="ti ti-check" aria-hidden="true"></i>Full Stack Developer</span>
-    <span class="tag active" data-val="Software Engineer (Node.js React)"><i class="ti ti-check" aria-hidden="true"></i>Software Engineer (Node.js/React)</span>
-    <span class="tag active" data-val="React.js Developer"><i class="ti ti-check" aria-hidden="true"></i>React.js Developer</span>
-    <span class="tag" data-val="Backend Engineer"><i class="ti ti-plus" aria-hidden="true"></i>Backend Engineer</span>
-    <span class="tag" data-val="Frontend Engineer"><i class="ti ti-plus" aria-hidden="true"></i>Frontend Engineer</span>
-    <span class="tag" data-val="Tech Lead"><i class="ti ti-plus" aria-hidden="true"></i>Tech Lead</span>
-    <span class="tag" data-val="AI Engineer"><i class="ti ti-plus" aria-hidden="true"></i>AI Engineer</span>
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.07);
+      padding: 28px 28px 24px;
+      width: 100%;
+      max-width: 680px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #ECEEF2;
+    }
+    .header-icon {
+      width: 38px; height: 38px;
+      background: #EEEDFE;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: #3C3489;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .header-text h1 { font-size: 16px; font-weight: 600; color: #111827; }
+    .header-text p  { font-size: 12px; color: #6B7280; margin-top: 2px; }
+
+    /* Section label */
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #9CA3AF;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 8px;
+    }
+
+    /* Tags */
+    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+    .tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 13px; padding: 5px 11px;
+      border-radius: 20px;
+      border: 1px solid #E5E7EB;
+      background: #F9FAFB;
+      color: #374151;
+      cursor: pointer; user-select: none;
+      transition: all 0.15s;
+    }
+    .tag:hover { border-color: #C4C1F0; background: #F4F3FE; }
+    .tag.active { background: #EEEDFE; border-color: #AFA9EC; color: #3C3489; font-weight: 500; }
+    .tag i { font-size: 12px; }
+
+    /* Divider */
+    .divider { height: 1px; background: #F3F4F6; margin: 20px 0; }
+
+    /* Filter grid */
+    .filter-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 4px;
+    }
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #6B7280;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .field label i { font-size: 14px; color: #9CA3AF; }
+
+    select, input[type=text] {
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #E5E7EB;
+      background: #F9FAFB;
+      color: #111827;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 28px;
+    }
+    input[type=text] {
+      background-image: none;
+      padding-right: 10px;
+    }
+    select:focus, input[type=text]:focus {
+      border-color: #AFA9EC;
+      box-shadow: 0 0 0 3px rgba(60,52,137,.08);
+      background-color: #fff;
+    }
+
+    /* Job boards */
+    .site-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(108px, 1fr));
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .site-card {
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      padding: 12px 8px 10px;
+      border-radius: 10px;
+      border: 1px solid #E5E7EB;
+      background: #F9FAFB;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .site-card:hover { border-color: #C4C1F0; background: #F4F3FE; }
+    .site-card.active { background: #EEEDFE; border-color: #AFA9EC; }
+    .site-card i { font-size: 22px; color: #9CA3AF; }
+    .site-card span { font-size: 11.5px; color: #374151; text-align: center; font-weight: 500; }
+    .site-card.active i { color: #3C3489; }
+    .site-card.active span { color: #3C3489; }
+
+    /* Footer */
+    .footer { margin-top: 4px; }
+    .search-btn {
+      width: 100%;
+      padding: 11px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 10px;
+      background: #3C3489;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      transition: background 0.15s;
+      letter-spacing: 0.01em;
+    }
+    .search-btn:hover { background: #534AB7; }
+    .search-btn i { font-size: 16px; }
+
+    .note {
+      font-size: 12px;
+      color: #9CA3AF;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 20px 16px; }
+      .filter-grid { grid-template-columns: 1fr; }
+      .site-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+
+    <div class="header">
+      <div class="header-icon"><i class="ti ti-search"></i></div>
+      <div class="header-text">
+        <h1>Job Search Filters</h1>
+        <p>Abhay Mishra &mdash; customize and open search links across job boards</p>
+      </div>
+    </div>
+
+    <p class="section-label">Role titles <span style="font-weight:400;text-transform:none;letter-spacing:0;">(tap to toggle)</span></p>
+    <div class="tag-row" id="roles">
+      <span class="tag active" data-val="React.js Developer"><i class="ti ti-check"></i>React.js Developer</span>
+      <span class="tag" data-val="Senior Full Stack Engineer"><i class="ti ti-plus"></i>Senior Full Stack Engineer</span>
+      <span class="tag" data-val="Full Stack Developer"><i class="ti ti-plus"></i>Full Stack Developer</span>
+      <span class="tag" data-val="Software Engineer (Node.js React)"><i class="ti ti-plus"></i>Software Engineer (Node.js/React)</span>
+      <span class="tag" data-val="Backend Engineer"><i class="ti ti-plus"></i>Backend Engineer</span>
+      <span class="tag" data-val="Frontend Engineer"><i class="ti ti-plus"></i>Frontend Engineer</span>
+      <span class="tag" data-val="Tech Lead"><i class="ti ti-plus"></i>Tech Lead</span>
+      <span class="tag" data-val="AI Engineer"><i class="ti ti-plus"></i>AI Engineer</span>
+    </div>
+
+    <p class="section-label">Must-have skills</p>
+    <div class="tag-row" id="skills">
+      <span class="tag active" data-val="TypeScript"><i class="ti ti-check"></i>TypeScript</span>
+      <span class="tag active" data-val="React.js"><i class="ti ti-check"></i>React.js</span>
+      <span class="tag active" data-val="Node.js"><i class="ti ti-check"></i>Node.js</span>
+      <span class="tag active" data-val="PostgreSQL"><i class="ti ti-check"></i>PostgreSQL</span>
+      <span class="tag active" data-val="GraphQL"><i class="ti ti-check"></i>GraphQL</span>
+      <span class="tag active" data-val="AWS"><i class="ti ti-check"></i>AWS</span>
+      <span class="tag active" data-val="Next.js"><i class="ti ti-check"></i>Next.js</span>
+      <span class="tag" data-val="Docker"><i class="ti ti-plus"></i>Docker</span>
+      <span class="tag" data-val="LLM"><i class="ti ti-plus"></i>LLM / AI</span>
+      <span class="tag" data-val="Redis"><i class="ti ti-plus"></i>Redis</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="filter-grid">
+      <div class="field">
+        <label><i class="ti ti-map-pin"></i>Location</label>
+        <select id="location">
+          <option value="Anywhere" selected>Anywhere / Remote</option>
+          <option value="Mumbai">Mumbai, India</option>
+          <option value="Remote">Remote only</option>
+          <option value="Bangalore">Bangalore, India</option>
+          <option value="Hyderabad">Hyderabad, India</option>
+          <option value="Pune">Pune, India</option>
+          <option value="India">India (anywhere)</option>
+          <option value="Worldwide">Worldwide</option>
+        </select>
+      </div>
+      <div class="field">
+        <label><i class="ti ti-calendar"></i>Date posted</label>
+        <select id="datePosted">
+          <option value="3">Last 3 days</option>
+          <option value="7">Last 7 days</option>
+          <option value="14">Last 14 days</option>
+          <option value="30">Last month</option>
+        </select>
+      </div>
+      <div class="field">
+        <label><i class="ti ti-briefcase"></i>Job type</label>
+        <select id="jobType">
+          <option value="full-time">Full-time</option>
+          <option value="contract">Contract</option>
+          <option value="any">Any</option>
+        </select>
+      </div>
+      <div class="field">
+        <label><i class="ti ti-coin"></i>Min. salary (LPA)</label>
+        <input type="text" id="salary" placeholder="e.g. 20" value="20" />
+      </div>
+      <div class="field">
+        <label><i class="ti ti-award"></i>Min. experience (yrs)</label>
+        <select id="minExp">
+          <option value="0">Any experience</option>
+          <option value="1">1+ years</option>
+          <option value="2">2+ years</option>
+          <option value="3">3+ years</option>
+          <option value="4" >4+ years</option>
+          <option value="5">5+ years</option>
+          <option value="7" selected>7+ years</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <p class="section-label">Job boards <span style="font-weight:400;text-transform:none;letter-spacing:0;">(select to search)</span></p>
+    <div class="site-grid" id="sites">
+      <div class="site-card active" data-url="linkedin" data-label="LinkedIn"><i class="ti ti-brand-linkedin"></i><span>LinkedIn</span></div>
+      <div class="site-card active" data-url="naukri" data-label="Naukri"><i class="ti ti-building-skyscraper"></i><span>Naukri</span></div>
+      <div class="site-card active" data-url="wellfound" data-label="Wellfound"><i class="ti ti-rocket"></i><span>Wellfound</span></div>
+      <div class="site-card" data-url="indeed" data-label="Indeed"><i class="ti ti-search"></i><span>Indeed</span></div>
+      <div class="site-card" data-url="unstop" data-label="Unstop"><i class="ti ti-bolt"></i><span>Unstop</span></div>
+      <div class="site-card" data-url="glassdoor" data-label="Glassdoor"><i class="ti ti-chart-bar"></i><span>Glassdoor</span></div>
+      <div class="site-card" data-url="cutshort" data-label="Cutshort"><i class="ti ti-briefcase"></i><span>Cutshort</span></div>
+      <div class="site-card" data-url="instahyre" data-label="Instahyre"><i class="ti ti-zap"></i><span>Instahyre</span></div>
+      <div class="site-card" data-url="ycombinator" data-label="Y Combinator"><i class="ti ti-brand-y-combinator"></i><span>Y Combinator</span></div>
+      <div class="site-card" data-url="remoteok" data-label="Remote OK"><i class="ti ti-world"></i><span>Remote OK</span></div>
+      <div class="site-card" data-url="weworkremotely" data-label="We Work Remotely"><i class="ti ti-device-laptop"></i><span>We Work Remotely</span></div>
+      <div class="site-card" data-url="dice" data-label="Dice"><i class="ti ti-code"></i><span>Dice</span></div>
+    </div>
+
+    <div class="footer">
+      <button class="search-btn" id="searchBtn">
+        <i class="ti ti-external-link"></i> Open search links
+      </button>
+      <p class="note" id="noteText">3 sites selected &middot; last 3 days &middot; Anywhere / Remote</p>
+    </div>
+
   </div>
 
-  <p class="section-label">Must-have skills</p>
-  <div class="tag-row" id="skills">
-    <span class="tag active" data-val="TypeScript"><i class="ti ti-check" aria-hidden="true"></i>TypeScript</span>
-    <span class="tag active" data-val="React.js"><i class="ti ti-check" aria-hidden="true"></i>React.js</span>
-    <span class="tag active" data-val="Node.js"><i class="ti ti-check" aria-hidden="true"></i>Node.js</span>
-    <span class="tag active" data-val="PostgreSQL"><i class="ti ti-check" aria-hidden="true"></i>PostgreSQL</span>
-    <span class="tag active" data-val="GraphQL"><i class="ti ti-check" aria-hidden="true"></i>GraphQL</span>
-    <span class="tag active" data-val="AWS"><i class="ti ti-check" aria-hidden="true"></i>AWS</span>
-    <span class="tag" data-val="Docker"><i class="ti ti-plus" aria-hidden="true"></i>Docker</span>
-    <span class="tag" data-val="LLM"><i class="ti ti-plus" aria-hidden="true"></i>LLM / AI</span>
-    <span class="tag" data-val="Next.js"><i class="ti ti-plus" aria-hidden="true"></i>Next.js</span>
-    <span class="tag" data-val="Redis"><i class="ti ti-plus" aria-hidden="true"></i>Redis</span>
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="row">
-    <div class="field">
-      <label><i class="ti ti-map-pin" aria-hidden="true" style="vertical-align:-2px;margin-right:4px;font-size:14px;"></i>Location</label>
-      <select id="location">
-        <option value="Anywhere" selected>Anywhere / Remote</option>
-        <option value="Mumbai">Mumbai, India</option>
-        <option value="Remote">Remote only</option>
-        <option value="Bangalore">Bangalore, India</option>
-        <option value="Hyderabad">Hyderabad, India</option>
-        <option value="Pune">Pune, India</option>
-        <option value="India">India (anywhere)</option>
-        <option value="Worldwide">Worldwide</option>
-      </select>
-    </div>
-    <div class="field">
-      <label><i class="ti ti-calendar" aria-hidden="true" style="vertical-align:-2px;margin-right:4px;font-size:14px;"></i>Date posted</label>
-      <select id="datePosted">
-        <option value="3">Last 3 days ✓</option>
-        <option value="7">Last 7 days</option>
-        <option value="14">Last 14 days</option>
-        <option value="30">Last month</option>
-      </select>
-    </div>
-    <div class="field">
-      <label><i class="ti ti-briefcase" aria-hidden="true" style="vertical-align:-2px;margin-right:4px;font-size:14px;"></i>Job type</label>
-      <select id="jobType">
-        <option value="full-time">Full-time</option>
-        <option value="contract">Contract</option>
-        <option value="any">Any</option>
-      </select>
-    </div>
-    <div class="field">
-      <label><i class="ti ti-coin" aria-hidden="true" style="vertical-align:-2px;margin-right:4px;font-size:14px;"></i>Min. salary (LPA)</label>
-      <input type="text" id="salary" placeholder="e.g. 20" value="20" />
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
-  <p class="section-label">Job boards (select all to search)</p>
-  <div class="site-grid" id="sites">
-    <div class="site-card active" data-url="linkedin" data-label="LinkedIn"><i class="ti ti-brand-linkedin" aria-hidden="true"></i><span>LinkedIn</span></div>
-    <div class="site-card active" data-url="naukri" data-label="Naukri"><i class="ti ti-building-skyscraper" aria-hidden="true"></i><span>Naukri</span></div>
-    <div class="site-card active" data-url="wellfound" data-label="Wellfound"><i class="ti ti-rocket" aria-hidden="true"></i><span>Wellfound</span></div>
-    <div class="site-card" data-url="indeed" data-label="Indeed"><i class="ti ti-search" aria-hidden="true"></i><span>Indeed</span></div>
-    <div class="site-card" data-url="unstop" data-label="Unstop"><i class="ti ti-bolt" aria-hidden="true"></i><span>Unstop</span></div>
-    <div class="site-card" data-url="glassdoor" data-label="Glassdoor"><i class="ti ti-chart-bar" aria-hidden="true"></i><span>Glassdoor</span></div>
-    <div class="site-card" data-url="cutshort" data-label="Cutshort"><i class="ti ti-briefcase" aria-hidden="true"></i><span>Cutshort</span></div>
-    <div class="site-card" data-url="instahyre" data-label="Instahyre"><i class="ti ti-zap" aria-hidden="true"></i><span>Instahyre</span></div>
-    <div class="site-card" data-url="ycombinator" data-label="Y Combinator"><i class="ti ti-brand-y-combinator" aria-hidden="true"></i><span>Y Combinator</span></div>
-    <div class="site-card" data-url="remoteok" data-label="Remote OK"><i class="ti ti-world" aria-hidden="true"></i><span>Remote OK</span></div>
-    <div class="site-card" data-url="weworkremotely" data-label="We Work Remotely"><i class="ti ti-device-laptop" aria-hidden="true"></i><span>We Work Remotely</span></div>
-    <div class="site-card" data-url="dice" data-label="Dice"><i class="ti ti-code" aria-hidden="true"></i><span>Dice</span></div>
-  </div>
-
-  <button class="search-btn" id="searchBtn"><i class="ti ti-external-link" aria-hidden="true" style="margin-right:6px;vertical-align:-2px;"></i>Open search links ↗</button>
-  <p class="note" id="noteText">3 sites selected · last 3 days · Anywhere / Remote</p>
-</div>
-
-<script>
-  function getActive(containerId) {
-    return [...document.querySelectorAll(`#${containerId} .tag.active`)].map(el => el.dataset.val);
-  }
-  function getActiveSites() {
-    return [...document.querySelectorAll('#sites .site-card.active')].map(el => el.dataset);
-  }
-  function updateNote() {
-    const sites = getActiveSites().length;
-    const days = document.getElementById('datePosted').value;
-    const locEl = document.getElementById('location');
-    const loc = locEl.options[locEl.selectedIndex].text;
-    document.getElementById('noteText').textContent = `${sites} site${sites!==1?'s':''} selected · last ${days} days · ${loc}`;
-  }
-  document.querySelectorAll('.tag').forEach(tag => {
-    tag.addEventListener('click', () => {
-      tag.classList.toggle('active');
-      const icon = tag.querySelector('i');
-      icon.className = tag.classList.contains('active') ? 'ti ti-check' : 'ti ti-plus';
+  <script>
+    function getActive(containerId) {
+      return [...document.querySelectorAll(`#${containerId} .tag.active`)].map(el => el.dataset.val);
+    }
+    function getActiveSites() {
+      return [...document.querySelectorAll('#sites .site-card.active')].map(el => el.dataset);
+    }
+    function updateNote() {
+      const sites = getActiveSites().length;
+      const days = document.getElementById('datePosted').value;
+      const locEl = document.getElementById('location');
+      const loc = locEl.options[locEl.selectedIndex].text;
+      document.getElementById('noteText').textContent = `${sites} site${sites !== 1 ? 's' : ''} selected · last ${days} days · ${loc}`;
+    }
+    document.querySelectorAll('.tag').forEach(tag => {
+      tag.addEventListener('click', () => {
+        tag.classList.toggle('active');
+        const icon = tag.querySelector('i');
+        icon.className = tag.classList.contains('active') ? 'ti ti-check' : 'ti ti-plus';
+      });
     });
-  });
-  document.querySelectorAll('.site-card').forEach(card => {
-    card.addEventListener('click', () => { card.classList.toggle('active'); updateNote(); });
-  });
-  ['datePosted','location'].forEach(id => document.getElementById(id).addEventListener('change', updateNote));
-
-  document.getElementById('searchBtn').addEventListener('click', () => {
-    const roles = getActive('roles');
-    const days = document.getElementById('datePosted').value;
-    const locVal = document.getElementById('location').value;
-    const jobType = document.getElementById('jobType').value;
-    const sites = getActiveSites();
-    if (!roles.length) { alert('Please select at least one role.'); return; }
-    if (!sites.length) { alert('Please select at least one job board.'); return; }
-
-    const isAnywhere = locVal === 'Anywhere' || locVal === 'Worldwide';
-    const linkedinLoc = isAnywhere ? 'Worldwide' : locVal + (locVal.includes('India') || locVal === 'Remote' ? '' : ', India');
-    const naukriLoc = isAnywhere ? 'india' : locVal.toLowerCase();
-
-    sites.forEach((site, i) => {
-      let url = '';
-      if (site.url === 'linkedin') {
-        const q = encodeURIComponent(roles[0] || 'Full Stack Engineer');
-        const tpMap = {'3':'r86400','7':'r604800','14':'r1209600','30':'r2592000'};
-        const jtParam = jobType === 'full-time' ? '&f_JT=F' : jobType === 'contract' ? '&f_JT=C' : '';
-        url = `https://www.linkedin.com/jobs/search/?keywords=${q}&location=${encodeURIComponent(linkedinLoc)}&f_TPR=${tpMap[days]}${jtParam}`;
-      } else if (site.url === 'naukri') {
-        const q = encodeURIComponent((roles[0]||'full stack developer').toLowerCase().replace(/\s+/g,'-'));
-        url = `https://www.naukri.com/${q}-jobs${isAnywhere ? '' : '-in-' + naukriLoc}?jobAge=${days}`;
-      } else if (site.url === 'wellfound') {
-        const q = encodeURIComponent(roles[0] || 'full-stack-engineer');
-        url = `https://wellfound.com/jobs?q=${q}${isAnywhere ? '&remote=true' : '&l=' + encodeURIComponent(locVal)}`;
-      } else if (site.url === 'indeed') {
-        const q = encodeURIComponent(roles.slice(0,2).join(' '));
-        url = `https://in.indeed.com/jobs?q=${q}${isAnywhere ? '' : '&l=' + encodeURIComponent(locVal)}&fromage=${days}`;
-      } else if (site.url === 'unstop') {
-        url = `https://unstop.com/jobs?oppType=jobs&search=${encodeURIComponent(roles[0]||'full stack')}`;
-      } else if (site.url === 'glassdoor') {
-        url = `https://www.glassdoor.co.in/Job/${encodeURIComponent((roles[0]||'full stack developer').toLowerCase().replace(/\s+/g,'-'))}-jobs-SRCH_KO0,30.htm`;
-      }
-      if (url) setTimeout(() => window.open(url, '_blank'), i * 150);
+    document.querySelectorAll('.site-card').forEach(card => {
+      card.addEventListener('click', () => { card.classList.toggle('active'); updateNote(); });
     });
-  });
-</script>
+    ['datePosted', 'location'].forEach(id => document.getElementById(id).addEventListener('change', updateNote));
+
+    document.getElementById('searchBtn').addEventListener('click', () => {
+      const roles = getActive('roles');
+      const days = document.getElementById('datePosted').value;
+      const locVal = document.getElementById('location').value;
+      const jobType = document.getElementById('jobType').value;
+      const minExp = parseInt(document.getElementById('minExp').value, 10);
+      const sites = getActiveSites();
+      if (!roles.length) { alert('Please select at least one role.'); return; }
+      if (!sites.length) { alert('Please select at least one job board.'); return; }
+
+      const isAnywhere = locVal === 'Anywhere' || locVal === 'Worldwide';
+      const linkedinLoc = isAnywhere ? 'Worldwide' : locVal + (locVal.includes('India') || locVal === 'Remote' ? '' : ', India');
+      const naukriLoc = isAnywhere ? 'india' : locVal.toLowerCase();
+
+      sites.forEach((site, i) => {
+        let url = '';
+        if (site.url === 'linkedin') {
+          const q = encodeURIComponent(roles[0] || 'Full Stack Engineer');
+          const tpMap = { '3': 'r86400', '7': 'r604800', '14': 'r1209600', '30': 'r2592000' };
+          const jtParam = jobType === 'full-time' ? '&f_JT=F' : jobType === 'contract' ? '&f_JT=C' : '';
+          const expLevelMap = minExp >= 8 ? '&f_E=4%2C5' : minExp >= 5 ? '&f_E=4' : minExp >= 3 ? '&f_E=3%2C4' : minExp >= 1 ? '&f_E=2%2C3' : '';
+          url = `https://www.linkedin.com/jobs/search/?keywords=${q}&location=${encodeURIComponent(linkedinLoc)}&f_TPR=${tpMap[days]}${jtParam}${expLevelMap}`;
+        } else if (site.url === 'naukri') {
+          const q = encodeURIComponent((roles[0] || 'full stack developer').toLowerCase().replace(/\s+/g, '-'));
+          const naukriExp = minExp > 0 ? `&experience=${minExp}` : '';
+          url = `https://www.naukri.com/${q}-jobs${isAnywhere ? '' : '-in-' + naukriLoc}?jobAge=${days}${naukriExp}`;
+        } else if (site.url === 'wellfound') {
+          const q = encodeURIComponent(roles[0] || 'full-stack-engineer');
+          const wfExp = minExp > 0 ? `&experience_min=${minExp}` : '';
+          url = `https://wellfound.com/jobs?q=${q}${isAnywhere ? '&remote=true' : '&l=' + encodeURIComponent(locVal)}${wfExp}`;
+        } else if (site.url === 'indeed') {
+          const q = encodeURIComponent(roles.slice(0, 2).join(' '));
+          url = `https://in.indeed.com/jobs?q=${q}${isAnywhere ? '' : '&l=' + encodeURIComponent(locVal)}&fromage=${days}`;
+        } else if (site.url === 'unstop') {
+          url = `https://unstop.com/jobs?oppType=jobs&search=${encodeURIComponent(roles[0] || 'full stack')}`;
+        } else if (site.url === 'glassdoor') {
+          url = `https://www.glassdoor.co.in/Job/${encodeURIComponent((roles[0] || 'full stack developer').toLowerCase().replace(/\s+/g, '-'))}-jobs-SRCH_KO0,30.htm`;
+        }
+        if (url) setTimeout(() => window.open(url, '_blank'), i * 150);
+      });
+    });
+  </script>
+</body>
+</html>
