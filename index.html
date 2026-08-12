@@ -258,9 +258,9 @@
           <option value="1">1+ years</option>
           <option value="2">2+ years</option>
           <option value="3">3+ years</option>
-          <option value="4" >4+ years</option>
+          <option value="4" selected>4+ years</option>
           <option value="5">5+ years</option>
-          <option value="7" selected>7+ years</option>
+          <option value="7">7+ years</option>
         </select>
       </div>
     </div>
@@ -282,15 +282,6 @@
       <div class="site-card" data-url="weworkremotely" data-label="We Work Remotely"><i class="ti ti-device-laptop"></i><span>We Work Remotely</span></div>
       <div class="site-card" data-url="dice" data-label="Dice"><i class="ti ti-code"></i><span>Dice</span></div>
     </div>
-    <script>
-    document.querySelectorAll('.site-card').forEach(card => {
-      card.addEventListener('click', () => {
-        document.querySelectorAll('.site-card').forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-        updateNote();
-      });
-    });
-    </script>
 
     <div class="footer">
       <button class="search-btn" id="searchBtn">
@@ -323,7 +314,11 @@
       });
     });
     document.querySelectorAll('.site-card').forEach(card => {
-      card.addEventListener('click', () => { card.classList.toggle('active'); updateNote(); });
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.site-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        updateNote();
+      });
     });
     ['datePosted', 'location'].forEach(id => document.getElementById(id).addEventListener('change', updateNote));
 
