@@ -268,22 +268,19 @@
     <div class="divider"></div>
 
     <p class="section-label">Job boards <span style="font-weight:400;text-transform:none;letter-spacing:0;">(select to search)</span></p>
-    <div class="field">
-      <label><i class="ti ti-world"></i>Job boards</label>
-      <select id="sites" multiple style="height: 120px; background-image: none; padding: 8px;">
-        <option value="linkedin" selected>🔗 LinkedIn</option>
-        <option value="naukri">🏢 Naukri</option>
-        <option value="wellfound">🚀 Wellfound</option>
-        <option value="indeed">🔍 Indeed</option>
-        <option value="unstop">⚡ Unstop</option>
-        <option value="glassdoor">📊 Glassdoor</option>
-        <option value="cutshort">💼 Cutshort</option>
-        <option value="instahyre">⚡ Instahyre</option>
-        <option value="ycombinator">Ⓨ Y Combinator</option>
-        <option value="remoteok">🌍 Remote OK</option>
-        <option value="weworkremotely">💻 We Work Remotely</option>
-        <option value="dice">👨‍💻 Dice</option>
-      </select>
+    <div class="site-grid" id="sites">
+      <div class="site-card active" data-url="linkedin" data-label="LinkedIn"><i class="ti ti-brand-linkedin"></i><span>LinkedIn</span></div>
+      <div class="site-card" data-url="naukri" data-label="Naukri"><i class="ti ti-building-skyscraper"></i><span>Naukri</span></div>
+      <div class="site-card" data-url="wellfound" data-label="Wellfound"><i class="ti ti-rocket"></i><span>Wellfound</span></div>
+      <div class="site-card" data-url="indeed" data-label="Indeed"><i class="ti ti-search"></i><span>Indeed</span></div>
+      <div class="site-card" data-url="unstop" data-label="Unstop"><i class="ti ti-bolt"></i><span>Unstop</span></div>
+      <div class="site-card" data-url="glassdoor" data-label="Glassdoor"><i class="ti ti-chart-bar"></i><span>Glassdoor</span></div>
+      <div class="site-card" data-url="cutshort" data-label="Cutshort"><i class="ti ti-briefcase"></i><span>Cutshort</span></div>
+      <div class="site-card" data-url="instahyre" data-label="Instahyre"><i class="ti ti-zap"></i><span>Instahyre</span></div>
+      <div class="site-card" data-url="ycombinator" data-label="Y Combinator"><i class="ti ti-brand-y-combinator"></i><span>Y Combinator</span></div>
+      <div class="site-card" data-url="remoteok" data-label="Remote OK"><i class="ti ti-world"></i><span>Remote OK</span></div>
+      <div class="site-card" data-url="weworkremotely" data-label="We Work Remotely"><i class="ti ti-device-laptop"></i><span>We Work Remotely</span></div>
+      <div class="site-card" data-url="dice" data-label="Dice"><i class="ti ti-code"></i><span>Dice</span></div>
     </div>
 
     <div class="footer">
