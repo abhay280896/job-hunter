@@ -144,6 +144,50 @@
     .site-card.active i { color: #3C3489; }
     .site-card.active span { color: #3C3489; }
 
+    /* Custom tag adder */
+    .tag-adder { display: flex; align-items: center; gap: 6px; margin-top: -14px; margin-bottom: 20px; }
+    .tag-adder input {
+      font-size: 12px; padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px dashed #D1D5DB;
+      background: transparent;
+      color: #374151; width: 170px; outline: none;
+      background-image: none; padding-right: 12px;
+    }
+    .tag-adder input:focus { border-color: #AFA9EC; border-style: solid; }
+    .tag-adder button {
+      width: 24px; height: 24px; border-radius: 50%;
+      border: 1px solid #D1D5DB; background: #F9FAFB;
+      color: #6B7280; cursor: pointer; font-size: 15px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s; flex-shrink: 0;
+    }
+    .tag-adder button:hover { border-color: #AFA9EC; color: #3C3489; background: #EEEDFE; }
+    .tag .tag-remove {
+      display: inline-flex; align-items: center;
+      margin-left: 3px; padding: 0;
+      background: none; border: none;
+      color: #9CA3AF; cursor: pointer; font-size: 11px; line-height: 1;
+    }
+    .tag .tag-remove:hover { color: #EF4444; }
+
+    /* Custom select input */
+    .custom-field-input {
+      display: none;
+      margin-top: 5px;
+      font-size: 13px; padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px dashed #AFA9EC;
+      background: #F9FAFB; color: #111827;
+      width: 100%; outline: none;
+      background-image: none; padding-right: 10px;
+    }
+    .custom-field-input:focus {
+      border-style: solid;
+      box-shadow: 0 0 0 3px rgba(60,52,137,.08);
+      background: #fff;
+    }
+
     /* Footer */
     .footer { margin-top: 4px; }
     .search-btn {
@@ -199,19 +243,28 @@
       <span class="tag" data-val="Tech Lead"><i class="ti ti-plus"></i>Tech Lead</span>
       <span class="tag" data-val="AI Engineer"><i class="ti ti-plus"></i>AI Engineer</span>
     </div>
+    <div class="tag-adder">
+      <input type="text" id="customRole" placeholder="Add custom role…" />
+      <button id="addRoleBtn" title="Add"><i class="ti ti-plus"></i></button>
+    </div>
 
     <p class="section-label">Must-have skills</p>
     <div class="tag-row" id="skills">
       <span class="tag active" data-val="TypeScript"><i class="ti ti-check"></i>TypeScript</span>
+      <span class="tag active" data-val="javascript"><i class="ti ti-check"></i>Javascript</span>
       <span class="tag active" data-val="React.js"><i class="ti ti-check"></i>React.js</span>
-      <span class="tag active" data-val="Node.js"><i class="ti ti-check"></i>Node.js</span>
-      <span class="tag active" data-val="PostgreSQL"><i class="ti ti-check"></i>PostgreSQL</span>
-      <span class="tag active" data-val="GraphQL"><i class="ti ti-check"></i>GraphQL</span>
-      <span class="tag active" data-val="AWS"><i class="ti ti-check"></i>AWS</span>
       <span class="tag active" data-val="Next.js"><i class="ti ti-check"></i>Next.js</span>
+      <span class="tag" data-val="Node.js"><i class="ti ti-plus"></i>Node.js</span>
+      <span class="tag" data-val="PostgreSQL"><i class="ti ti-plus"></i>PostgreSQL</span>
+      <span class="tag" data-val="GraphQL"><i class="ti ti-plus"></i>GraphQL</span>
+      <span class="tag" data-val="AWS"><i class="ti ti-plus"></i>AWS</span>
       <span class="tag" data-val="Docker"><i class="ti ti-plus"></i>Docker</span>
       <span class="tag" data-val="LLM"><i class="ti ti-plus"></i>LLM / AI</span>
       <span class="tag" data-val="Redis"><i class="ti ti-plus"></i>Redis</span>
+    </div>
+    <div class="tag-adder">
+      <input type="text" id="customSkill" placeholder="Add custom skill…" />
+      <button id="addSkillBtn" title="Add"><i class="ti ti-plus"></i></button>
     </div>
 
     <div class="divider"></div>
@@ -228,7 +281,9 @@
           <option value="Pune">Pune, India</option>
           <option value="India">India (anywhere)</option>
           <option value="Worldwide">Worldwide</option>
+          <option value="custom">Custom location…</option>
         </select>
+        <input type="text" class="custom-field-input" id="locationCustom" placeholder="e.g. Delhi, India" />
       </div>
       <div class="field">
         <label><i class="ti ti-calendar"></i>Date posted</label>
@@ -245,7 +300,9 @@
           <option value="full-time">Full-time</option>
           <option value="contract">Contract</option>
           <option value="any">Any</option>
+          <option value="custom">Custom…</option>
         </select>
+        <input type="text" class="custom-field-input" id="jobTypeCustom" placeholder="e.g. Internship, Part-time" />
       </div>
       <div class="field">
         <label><i class="ti ti-coin"></i>Min. salary (LPA)</label>
@@ -261,7 +318,9 @@
           <option value="4" selected>4+ years</option>
           <option value="5">5+ years</option>
           <option value="7">7+ years</option>
+          <option value="custom">Custom…</option>
         </select>
+        <input type="text" class="custom-field-input" id="minExpCustom" placeholder="e.g. 6" />
       </div>
     </div>
 
@@ -299,11 +358,36 @@
     function getActiveSites() {
       return [...document.querySelectorAll('#sites .site-card.active')].map(el => el.dataset);
     }
+    function resolveCustom(selectId, customInputId, fallback) {
+      const val = document.getElementById(selectId).value;
+      if (val !== 'custom') return val;
+      return document.getElementById(customInputId).value.trim() || fallback;
+    }
+    function addCustomTag(containerId, inputId) {
+      const input = document.getElementById(inputId);
+      const val = input.value.trim();
+      if (!val) return;
+      const container = document.getElementById(containerId);
+      const tag = document.createElement('span');
+      tag.className = 'tag active';
+      tag.dataset.val = val;
+      tag.innerHTML = `<i class="ti ti-check"></i>${val}<button class="tag-remove" title="Remove"><i class="ti ti-x"></i></button>`;
+      tag.addEventListener('click', (e) => {
+        if (e.target.closest('.tag-remove')) { tag.remove(); return; }
+        tag.classList.toggle('active');
+        tag.querySelector('i').className = tag.classList.contains('active') ? 'ti ti-check' : 'ti ti-plus';
+      });
+      container.appendChild(tag);
+      input.value = '';
+      input.focus();
+    }
     function updateNote() {
       const sites = getActiveSites().length;
       const days = document.getElementById('datePosted').value;
       const locEl = document.getElementById('location');
-      const loc = locEl.options[locEl.selectedIndex].text;
+      const loc = locEl.value === 'custom'
+        ? (document.getElementById('locationCustom').value.trim() || 'Custom location')
+        : locEl.options[locEl.selectedIndex].text;
       document.getElementById('noteText').textContent = `${sites} site${sites !== 1 ? 's' : ''} selected · last ${days} days · ${loc}`;
     }
     document.querySelectorAll('.tag').forEach(tag => {
@@ -321,13 +405,26 @@
       });
     });
     ['datePosted', 'location'].forEach(id => document.getElementById(id).addEventListener('change', updateNote));
+    document.getElementById('locationCustom').addEventListener('input', updateNote);
+
+    ['location', 'jobType', 'minExp'].forEach(id => {
+      document.getElementById(id).addEventListener('change', function() {
+        const el = document.getElementById(id + 'Custom');
+        if (el) el.style.display = this.value === 'custom' ? 'block' : 'none';
+      });
+    });
+
+    document.getElementById('addRoleBtn').addEventListener('click', () => addCustomTag('roles', 'customRole'));
+    document.getElementById('addSkillBtn').addEventListener('click', () => addCustomTag('skills', 'customSkill'));
+    document.getElementById('customRole').addEventListener('keydown', e => { if (e.key === 'Enter') addCustomTag('roles', 'customRole'); });
+    document.getElementById('customSkill').addEventListener('keydown', e => { if (e.key === 'Enter') addCustomTag('skills', 'customSkill'); });
 
     document.getElementById('searchBtn').addEventListener('click', () => {
       const roles = getActive('roles');
       const days = document.getElementById('datePosted').value;
-      const locVal = document.getElementById('location').value;
-      const jobType = document.getElementById('jobType').value;
-      const minExp = parseInt(document.getElementById('minExp').value, 10);
+      const locVal = resolveCustom('location', 'locationCustom', 'Anywhere');
+      const jobType = resolveCustom('jobType', 'jobTypeCustom', 'any');
+      const minExp = parseInt(resolveCustom('minExp', 'minExpCustom', '0'), 10) || 0;
       const sites = getActiveSites();
       if (!roles.length) { alert('Please select at least one role.'); return; }
       if (!sites.length) { alert('Please select at least one job board.'); return; }
@@ -359,6 +456,26 @@
           url = `https://unstop.com/jobs?oppType=jobs&search=${encodeURIComponent(roles[0] || 'full stack')}`;
         } else if (site.url === 'glassdoor') {
           url = `https://www.glassdoor.co.in/Job/${encodeURIComponent((roles[0] || 'full stack developer').toLowerCase().replace(/\s+/g, '-'))}-jobs-SRCH_KO0,30.htm`;
+        } else if (site.url === 'cutshort') {
+          const q = encodeURIComponent(roles[0] || 'full stack developer');
+          url = `https://cutshort.io/jobs?q=${q}${isAnywhere ? '&job_location_preference=remote' : ''}`;
+        } else if (site.url === 'instahyre') {
+          const q = encodeURIComponent(roles[0] || 'full stack developer');
+          url = `https://www.instahyre.com/candidate/opportunities/?query=${q}`;
+        } else if (site.url === 'ycombinator') {
+          const q = encodeURIComponent(roles[0] || 'full stack engineer');
+          url = `https://www.workatastartup.com/jobs?query=${q}${isAnywhere ? '&remote=true' : ''}`;
+        } else if (site.url === 'remoteok') {
+          const q = encodeURIComponent(roles[0] || 'developer');
+          url = `https://remoteok.com/?q=${q}`;
+        } else if (site.url === 'weworkremotely') {
+          const q = encodeURIComponent(roles[0] || 'developer');
+          url = `https://weworkremotely.com/remote-jobs/search?term=${q}`;
+        } else if (site.url === 'dice') {
+          const q = encodeURIComponent(roles[0] || 'full stack developer');
+          const diceDateMap = { '3': 'THREE_DAYS', '7': 'ONE_WEEK', '14': 'TWO_WEEKS', '30': 'THIRTY_DAYS' };
+          const diceEmpType = jobType === 'full-time' ? '&filters.employmentType=FULLTIME' : jobType === 'contract' ? '&filters.employmentType=CONTRACTS' : '';
+          url = `https://www.dice.com/jobs?q=${q}${isAnywhere ? '' : '&location=' + encodeURIComponent(locVal)}&filters.postedDate=${diceDateMap[days]}${diceEmpType}`;
         }
         if (url) setTimeout(() => window.open(url, '_blank'), i * 150);
       });
